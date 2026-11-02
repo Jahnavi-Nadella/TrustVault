@@ -1,15 +1,21 @@
 
 from pathlib import Path
-
+import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security key (for local development only)
-SECRET_KEY = "django-insecure-trustvault-local-development-key-2026"
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY",
+    "django-insecure-local-development-only-change-me",
+)
 
 # Debug mode
-DEBUG = True
+DEBUG = os.environ.get("DJANGO_DEBUG", "True").lower() == "true"
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+ALLOWED_HOSTS = os.environ.get(
+    "DJANGO_ALLOWED_HOSTS",
+    "127.0.0.1,localhost",
+).split(",")
 
 # Installed applications
 INSTALLED_APPS = [
