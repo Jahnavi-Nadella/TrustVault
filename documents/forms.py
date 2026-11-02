@@ -2,7 +2,6 @@
 from django import forms
 from .models import Document
 import os
-import magic
 import zipfile
 
 
@@ -56,15 +55,6 @@ class DocumentForm(forms.ModelForm):
                     "Invalid PDF file content."
                 )
 
-            detected_type = magic.from_buffer(
-                file_content[:2048],
-                mime=True
-            )
-
-            if detected_type != "application/pdf":
-                raise forms.ValidationError(
-                    "The uploaded file is not a valid PDF."
-                )
 
         elif extension == ".docx":
 
