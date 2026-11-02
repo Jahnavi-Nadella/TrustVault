@@ -48,4 +48,5 @@ urlpatterns = [
     views.revoke_share,
     name="revoke_share",
 ),
+path("register/", views.register_view, name="register"),
 ]
