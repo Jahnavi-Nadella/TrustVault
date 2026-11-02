@@ -1,7 +1,6 @@
 asgiref==3.13.0
 Django==5.2.18
 gunicorn==26.2.0
-python-magic-bin==0.4.14
 sqlparse==0.6.1
 tzdata==2026.6
 whitenoise==6.12.0
