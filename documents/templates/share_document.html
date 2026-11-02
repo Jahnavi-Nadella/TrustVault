@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share Document - TrustVault</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f4f6;
+            margin: 0;
+            padding: 30px 15px;
+            color: #1f2937;
+        }
+        .container {
+            max-width: 850px;
+            margin: auto;
+        }
+        .panel {
+            background: white;
+            padding: 24px;
+            margin: 18px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 100%;
+            max-width: 360px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 14px;
+            border: 0;
+            border-radius: 5px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+        }
+        .message { margin: 12px 0; }
+        .permission-row { margin: 12px 0; }
+        .revoke {
+            background: #dc2626;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <h1>Share Document</h1>
+        <p><a href="{% url 'dashboard' %}">← Back to Dashboard</a></p>
+
+        <section class="panel">
+            <h2>{{ document.title }}</h2>
+            <p>Share this document with another user and choose their permissions.</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="message">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                <p>
+                    <label for="username">Username</label><br>
+                    <input id="username" type="text" name="username" required>
+                </p>
+
+                <div class="permission-row">
+                    <label><input type="checkbox" name="can_view" checked> Allow viewing</label>
+                </div>
+                <div class="permission-row">
+                    <label><input type="checkbox" name="can_download"> Allow downloading</label>
+                </div>
+                <div class="permission-row">
+                    <label><input type="checkbox" name="can_edit"> Allow editing</label>
+                </div>
+
+                <button type="submit">Save Sharing Permissions</button>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2>Users with access</h2>
+
+            {% if permissions %}
+                {% for permission in permissions %}
+                    <div>
+                        <p><strong>{{ permission.user.username }}</strong></p>
+                        <p>
+                            View: {{ permission.can_view|yesno:"Yes,No" }} |
+                            Download: {{ permission.can_download|yesno:"Yes,No" }} |
+                            Edit: {{ permission.can_edit|yesno:"Yes,No" }}
+                        </p>
+
+                        <form method="post"
+                              action="{% url 'revoke_share' document.id permission.user.username %}">
+                            {% csrf_token %}
+                            <button class="revoke" type="submit">Revoke Access</button>
+                        </form>
+                    </div>
+                    <hr>
+                {% endfor %}
+            {% else %}
+                <p>No users currently have access to this document.</p>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

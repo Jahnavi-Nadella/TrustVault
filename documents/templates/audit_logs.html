@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrustVault | Audit Logs</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 30px;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #1f2937;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        h1 {
+            color: #172554;
+        }
+
+        a {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2563eb;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #172554;
+            color: white;
+        }
+
+        .empty {
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .pagination {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Audit Logs</h1>
+        <a href="{% url 'dashboard' %}">← Back to Dashboard</a>
+
+        
+<form method="GET">
+    <label for="action">Filter by action:</label>
+
+    <select name="action" id="action">
+        <option value="">All actions</option>
+        <option value="UPLOAD">Upload</option>
+        <option value="VIEW">View</option>
+        <option value="VIEW_DETAILS">View Details</option>
+        <option value="DOWNLOAD">Download</option>
+        <option value="SHARE">Share</option>
+        <option value="REVOKE_SHARE">Revoke Share</option>
+        <option value="REVOKE">Revoke</option>
+        <option value="EDIT">Edit</option>
+        <option value="DELETE">Delete</option>
+        <option value="DENIED">Denied</option>
+    </select>
+
+    <button type="submit">Apply Filter</button>
+</form>
+
+            <button type="submit">Apply Filter</button>
+        </form>
+
+        {% if logs %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th>Document ID</th>
+                            <th>Time</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                            <tr>
+                                <td>{{ log.action }}</td>
+                                <td>{{ log.document_id }}</td>
+                                <td>{{ log.timestamp|date:"M d, Y H:i" }}</td>
+                                <td>{{ log.details }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty">No activity has been recorded yet.</p>
+        {% endif %}
+
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}&action={{ selected_action }}">Previous</a>
+            {% endif %}
+
+            <span>
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&action={{ selected_action }}">Next</a>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share Document | TrustVault</title>
+</head>
+<body>
+    <h1>Share Document</h1>
+    <p><strong>Document:</strong> {{ document.title }}</p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <h2>Share with a user</h2>
+    <form method="post">
+        {% csrf_token %}
+
+        <p>
+            <label for="username">Recipient Username:</label>
+            <input type="text" id="username" name="username" required>
+        </p>
+
+        <p>
+            <label>
+                <input type="checkbox" name="can_view" checked>
+                Allow viewing
+            </label>
+        </p>
+
+        <p>
+            <label>
+                <input type="checkbox" name="can_download">
+                Allow downloading
+            </label>
+        </p>
+
+        <button type="submit">Share Document</button>
+    </form>
+
+    <h2>People with access</h2>
+
+    {% if permissions %}
+        <table border="1" cellpadding="8">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Can view</th>
+                    <th>Can download</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for permission in permissions %}
+                    <tr>
+                        <td>{{ permission.user.username }}</td>
+                        <td>{{ permission.can_view|yesno:"Yes,No" }}</td>
+                        <td>{{ permission.can_download|yesno:"Yes,No" }}</td>
+                        <td>
+                            <form
+                                method="post"
+                                action="{% url 'revoke_share' document.id permission.user.username %}"
+                                onsubmit="return confirm('Revoke this user’s access?');"
+                            >
+                                {% csrf_token %}
+                                <button type="submit">Revoke Share</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>This document has not been shared with anyone.</p>
+    {% endif %}
+
+    <p><a href="{% url 'dashboard' %}">Back to Dashboard</a></p>
+    <label>
+    <input type="checkbox" name="can_edit">
+    Can edit
+</label>
+</body>
+</html>

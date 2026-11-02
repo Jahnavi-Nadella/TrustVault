@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrustVault | Shared Documents</title>
+</head>
+<body>
+    <h1>Documents Shared With Me</h1>
+    <p><a href="{% url 'dashboard' %}">← Back to Dashboard</a></p>
+
+    {% if permissions %}
+        <ul>
+            {% for permission in permissions %}
+                <li>
+                    <strong>{{ permission.document.title }}</strong>
+                    — Shared by {{ permission.document.owner.username }}
+
+                    <a href="{% url 'document_details' permission.document.id %}">
+                        View Details
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No documents have been shared with you yet.</p>
+    {% endif %}
+</body>
+</html>

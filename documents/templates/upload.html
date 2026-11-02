@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TrustVault - Upload Document</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 75px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px #ddd;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e3a8a;
+        }
+
+        label {
+            display: block;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 25px;
+            padding: 13px 22px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1e40af;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            color: #1e3a8a;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Upload New Document</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <label>Document Title</label>
+        {{ form.title }}
+
+        <label>Category</label>
+        {{ form.category }}
+
+        <label>Select Document</label>
+        {{ form.file }}
+
+        <button type="submit">Upload Document</button>
+
+    </form>
+
+    <a href="{% url 'dashboard' %}">Back to Dashboard</a>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Details | TrustVault</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        header {
+            background: #172554;
+            color: white;
+            padding: 18px 6%;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        main {
+            width: 90%;
+            max-width: 800px;
+            margin: 35px auto;
+        }
+
+        .details-card {
+            background: white;
+            padding: 28px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06);
+        }
+
+        .details-card h2 {
+            margin-top: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .detail-row {
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+            overflow-wrap: anywhere;
+        }
+
+        .detail-row strong {
+            display: inline-block;
+            min-width: 150px;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .actions a {
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 6px;
+            color: white;
+            text-decoration: none;
+            background: #2563eb;
+        }
+
+        .actions .back-button {
+            background: #475569;
+        }
+
+        .permission-note {
+            margin-top: 20px;
+            padding: 12px;
+            background: #eff6ff;
+            border-radius: 6px;
+        }
+
+        .message {
+            margin-top: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>TrustVault</h1>
+    </header>
+
+    <main>
+        <section class="details-card">
+            <h2>Document Details</h2>
+
+            <div class="detail-row">
+                <strong>Title:</strong>
+                {{ document.title }}
+            </div>
+
+            <div class="detail-row">
+                <strong>Category:</strong>
+                {{ document.category|default:"Not specified" }}
+            </div>
+
+            <div class="detail-row">
+                <strong>Owner:</strong>
+                {{ document.owner.username }}
+            </div>
+
+            <div class="detail-row">
+                <strong>Uploaded:</strong>
+                {{ document.uploaded_at|date:"M d, Y, H:i" }}
+            </div>
+
+            {% if document.owner_id == request.user.id %}
+                <p class="permission-note">
+                    You own this document and can manage its sharing permissions.
+                </p>
+            {% elif permission %}
+                <p class="permission-note">
+                    This document has been shared with you.
+                    View permission:
+                    {% if permission.can_view %}Allowed{% else %}Not allowed{% endif %}.
+                    Download permission:
+                    {% if permission.can_download %}Allowed{% else %}Not allowed{% endif %}.
+                </p>
+            {% endif %}
+
+            <div class="actions">
+                <a href="{% url 'view_document' document.id %}">
+                    View Document
+                </a>
+
+                {% if can_download %}
+                    <a href="{% url 'download_document' document.id %}">
+                        Download
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'dashboard' %}" class="back-button">
+                    Back to Dashboard
+                </a>
+            </div>
+
+            {% if document.owner_id == request.user.id %}
+                <p>
+                    <a href="{% url 'edit_document' document.id %}">
+                        Edit Details
+                    </a>
+                </p>
+            {% endif %}
+
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="message">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+
+            <h2>Recent Activity</h2>
+
+            {% if activity_logs %}
+                <ul>
+                    {% for log in activity_logs %}
+                        <li>
+                            {{ log.action }} —
+                            {{ log.timestamp|date:"M d, Y H:i" }} —
+                            {{ log.details }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No activity recorded for this document yet.</p>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>
