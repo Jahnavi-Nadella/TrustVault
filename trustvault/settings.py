@@ -2,7 +2,7 @@ import dj_database_url
 from pathlib import Path
 import os
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+import dj_database_url
 # Security key (for local development only)
 SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
@@ -73,6 +73,9 @@ TEMPLATES = [
 WSGI_APPLICATION = "trustvault.wsgi.application"
 
 # Database configuration
+# Database configuration
+
+
 DATABASES = {
     "default": dj_database_url.config(
         default=os.environ.get("DATABASE_URL"),
