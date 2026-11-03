@@ -110,7 +110,17 @@ USE_TZ = True
 STATIC_URL = "static/"
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "endpoint_url": os.environ.get("AWS_ENDPOINT_URL_S3"),
+            "access_key": os.environ.get("AWS_ACCESS_KEY_ID"),
+            "secret_key": os.environ.get("AWS_SECRET_ACCESS_KEY"),
+            "region_name": os.environ.get("AWS_REGION"),
+            "bucket_name": os.environ.get("AWS_STORAGE_BUCKET_NAME"),
+            "addressing_style": "path",
+            "default_acl": None,
+            "querystring_auth": True,
+        },
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
