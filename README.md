@@ -25,5 +25,6 @@ TrustVault is a secure document-sharing web application built with Django. It le
 1. Activate the project's virtual environment.
 2. Install dependencies:
 
-   ```bash
-   pip install django
+```bash
+pip install -r requirements.txt
+```
